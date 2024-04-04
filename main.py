@@ -1,36 +1,27 @@
 import numpy as np
-from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 
-def lorenz_system(state, t, sigma, rho, beta):
-    x, y, z = state
-    dxdt = sigma * (y - x)
-    dydt = x * (rho - z) - y
-    dzdt = x * y - beta * z
-    return [dxdt, dydt, dzdt]
+def logistic_map(r, x):
+    return r * x * (1 - x)
 
 # Parametreler
-sigma = 10.0
-rho = 28.0
-beta = 8.0 / 3.0
+r = 3.9  # Kaotik davranış gösteren bir değer seçebilirsiniz
+x0 = 0.1  # Başlangıç değeri
 
-# Başlangıç koşulları
-initial_state = [1.0, 1.0, 1.0]
+# İterasyon sayısı
+iterations = 1000
 
-# Zaman aralığı
-t = np.linspace(0, 50, 10000)
+# Değerleri saklamak için dizi
+values = np.zeros(iterations+1)
+values[0] = x0
 
-# Diferansiyel denklemleri çöz
-solution = odeint(lorenz_system, initial_state, t, args=(sigma, rho, beta))
+# İterasyonları yap
+for i in range(iterations):
+    values[i+1] = logistic_map(r, values[i])
 
-# Çözümü çiz
-plt.figure(figsize=(10, 6))
-plt.plot(t, solution[:, 0], label='x(t)')
-plt.plot(t, solution[:, 1], label='y(t)')
-plt.plot(t, solution[:, 2], label='z(t)')
-plt.title('Lorenz Sistemi Çözümü')
-plt.xlabel('Zaman')
+# Sonuçları çiz
+plt.plot(values, 'b-', lw=0.5)
+plt.title('Logistic Map')
+plt.xlabel('İterasyon')
 plt.ylabel('Değer')
-plt.legend()
-plt.grid()
 plt.show()
